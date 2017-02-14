@@ -12,21 +12,21 @@ public class main {
 		/*
 		 * template 
 		 */
-		//Mat outImg=templateMatch.match("img.png", "template.png");
-		//Highgui.imwrite("out.png", outImg);
+		Mat outImg=templateMatch.match("input/soldier-weapon.jpg","input/soldier.jpg");
+//		Highgui.imwrite("out.png", outImg);
 		
-		/*
-		 * surf
-		 */
-		SurfMatch surfMatch = new SurfMatch("surf-high-soldier",FeatureDetector.SURF);
-		/*
-		 * match(object,scene)
-		 */
-		surfMatch.match("input/soldier.jpg","input/soldier-weapon.jpg");
-		
-		/*
-		 * 
-		 */
+//		/*
+//		 * surf
+//		 */
+//		SurfMatch surfMatch = new SurfMatch("surf-high-soldier2-",FeatureDetector.SURF);
+//		/*
+//		 * match(object, scene)
+//		 */
+//		surfMatch.match("input/soldier-weapon.jpg","input/soldier.jpg");
+
 	}
+	
+	
+	//public static 
 
 }

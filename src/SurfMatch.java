@@ -23,37 +23,44 @@ public class SurfMatch {
 
 	private String prefix="";
 	private int way = FeatureDetector.SURF;
+	FeatureDetector featureDetector = FeatureDetector.create(FeatureDetector.SURF);
+	DescriptorExtractor descriptorExtractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
 	
 	public SurfMatch(String prefix, int way){
 		this.prefix= prefix;
 		this.way = way;
 	}
 	
-	public Mat match(String templateName, String imageName) {
+	public Mat loadImage(String imageName){
 		System.out.println("Started....");
 		System.out.println("Loading images...");
+		return Highgui.imread(imageName, Highgui.CV_LOAD_IMAGE_COLOR);
 		
-		String bookObject = imageName;
-	    String bookScene = templateName;
-	        
-		Mat objectImage = Highgui.imread(bookObject, Highgui.CV_LOAD_IMAGE_COLOR);
-		Mat sceneImage = Highgui.imread(bookScene, Highgui.CV_LOAD_IMAGE_COLOR);
+	}
 
-		MatOfKeyPoint objectKeyPoints = new MatOfKeyPoint();
-		FeatureDetector featureDetector = FeatureDetector.create(FeatureDetector.SURF);
+	public Mat match(String sceneName, String objectName) {
+		
+		
+		Mat objectImage = loadImage(sceneName);
+		Mat sceneImage = loadImage(objectName);
+
 		System.out.println("Detecting key points...");
+		
+		// key point 저장소
+		MatOfKeyPoint objectKeyPoints = new MatOfKeyPoint();
+		// image 의 key points를 찾는다.
 		featureDetector.detect(objectImage, objectKeyPoints);
+		// key points를 array형태로
 		KeyPoint[] keypoints = objectKeyPoints.toArray();
-		System.out.println(keypoints);
 
+		// descriptors의 key point 저장소
 		MatOfKeyPoint objectDescriptors = new MatOfKeyPoint();
-		DescriptorExtractor descriptorExtractor = DescriptorExtractor.create(DescriptorExtractor.SURF);
-		System.out.println("Computing descriptors...");
+		
+		//img와 key point로 descriptor를 뽑아낸다.
 		descriptorExtractor.compute(objectImage, objectKeyPoints, objectDescriptors);
 
 		Mat outputImage = new Mat(objectImage.rows(), objectImage.cols(), Highgui.CV_LOAD_IMAGE_COLOR);
 		Scalar newKeypointColor = new Scalar(255, 0, 0);
-
 		System.out.println("Drawing key points on object image...");
 		Features2d.drawKeypoints(objectImage, objectKeyPoints, outputImage, newKeypointColor, 0);
 
@@ -90,7 +97,7 @@ public class SurfMatch {
 			}
 		}
 
-		if (goodMatchesList.size() >= 7) {
+		if (goodMatchesList.size() >= 2) {
 			System.out.println("Object Found!!!");
 
 			List<KeyPoint> objKeypointlist = objectKeyPoints.toList();
@@ -122,7 +129,7 @@ public class SurfMatch {
 			System.out.println("Transforming object corners to scene corners...");
 			Core.perspectiveTransform(obj_corners, scene_corners, homography);
 
-			Mat img = Highgui.imread(bookScene, Highgui.CV_LOAD_IMAGE_COLOR);
+			Mat img = Highgui.imread(sceneName, Highgui.CV_LOAD_IMAGE_COLOR);
 
 			Core.line(img, new Point(scene_corners.get(0, 0)), new Point(scene_corners.get(1, 0)),
 					new Scalar(0, 255, 0), 4);
