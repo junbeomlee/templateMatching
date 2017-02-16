@@ -12,9 +12,19 @@ public class main {
 		/*
 		 * template 
 		 */
-		Mat outImg=templateMatch.match("input/soldier-weapon.jpg","input/soldier.jpg");
-//		Highgui.imwrite("out.png", outImg);
+		Mat mat=Highgui.imread("input/on1.png");
+		System.out.println("size: "+"width:"+mat.width()+" height: "+mat.height());
 		
+		Mat mat2=Highgui.imread("input/soldier.jpg");
+		System.out.println("size: "+"width:"+mat2.width()+" height: "+mat2.height());
+//		
+		Mat mat3=Highgui.imread("input/soldier-weapon.jpg");
+		Mat mat4=templateMatch.resize(mat3, ((double)mat2.width()/(double)mat.width()),((double)mat2.height()/(double)mat.height()));
+		Highgui.imwrite("input/resizeWeapon.png", mat4);
+		
+		Mat outImg=templateMatch.match("input/resizeWeapon.png","input/soldier.jpg");
+		Highgui.imwrite("out.png", outImg);
+		//}
 //		/*
 //		 * surf
 //		 */
@@ -27,6 +37,8 @@ public class main {
 	}
 	
 	
-	//public static 
+	public static void multiScaleMatching(){
+		
+	}
 
 }
